@@ -14,6 +14,7 @@ import usb.util
 VENDOR_ID = 0x0801
 PRODUCT_ID = 0x0002
 DATA_SIZE = 337
+#DATA_SIZE = 10
 
 # find the MagTek reader
 
@@ -42,11 +43,16 @@ endpoint = device[0][(0,0)][0]
 
 # wait for swipe
 
+mycontinue = True
 data = []
 swiped = False
 print "Please swipe your card..."
 
-while 1:
+while mycontinue:
+    print len(data)
+    print "Data: %s" % ''.join(map(chr, data))
+    if ( len(data) >= DATA_SIZE ):
+     mycontinue = False
     try:
         data += device.read(endpoint.bEndpointAddress, endpoint.wMaxPacketSize)
         if not swiped: 
@@ -62,6 +68,7 @@ while 1:
                 swiped = False
                 continue
             else:
+                print "break!"
                 break   # we got it!
 
 # now we have the binary data from the MagReader! 
